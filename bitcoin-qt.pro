@@ -1,6 +1,6 @@
 TEMPLATE = app
-TARGET = litecoin-qt
-macx:TARGET = "Litecoin-Qt"
+TARGET = monacoin-qt
+macx:TARGET = "Monacoin-Qt"
 VERSION = 0.8.6.1
 INCLUDEPATH += src src/json src/qt
 QT += core gui network
@@ -8,6 +8,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE
 CONFIG += no_include_pwd
 CONFIG += thread
+CONFIG += qt
 
 # for boost 1.37, add -mt to the boost libraries
 # use: qmake BOOST_LIB_SUFFIX=-mt
@@ -18,6 +19,8 @@ CONFIG += thread
 # Dependency library locations can be customized with:
 #    BOOST_INCLUDE_PATH, BOOST_LIB_PATH, BDB_INCLUDE_PATH,
 #    BDB_LIB_PATH, OPENSSL_INCLUDE_PATH and OPENSSL_LIB_PATH respectively
+
+
 
 OBJECTS_DIR = build
 MOC_DIR = build
@@ -54,39 +57,39 @@ win32:QMAKE_LFLAGS *= -static-libgcc -static-libstdc++
 
 # use: qmake "USE_QRCODE=1"
 # libqrencode (http://fukuchi.org/works/qrencode/index.en.html) must be installed for support
-contains(USE_QRCODE, 1) {
-    message(Building with QRCode support)
-    DEFINES += USE_QRCODE
-    LIBS += -lqrencode
-}
+#contains(USE_QRCODE, 1) {
+#    message(Building with QRCode support)
+#    DEFINES += USE_QRCODE
+#    LIBS += -lqrencode
+#}
 
 # use: qmake "USE_UPNP=1" ( enabled by default; default)
 #  or: qmake "USE_UPNP=0" (disabled by default)
 #  or: qmake "USE_UPNP=-" (not supported)
 # miniupnpc (http://miniupnp.free.fr/files/) must be installed for support
-contains(USE_UPNP, -) {
+#contains(USE_UPNP, -) {
     message(Building without UPNP support)
-} else {
-    message(Building with UPNP support)
-    count(USE_UPNP, 0) {
-        USE_UPNP=1
-    }
-    DEFINES += USE_UPNP=$$USE_UPNP STATICLIB
-    INCLUDEPATH += $$MINIUPNPC_INCLUDE_PATH
-    LIBS += $$join(MINIUPNPC_LIB_PATH,,-L,) -lminiupnpc
-    win32:LIBS += -liphlpapi
-}
+#} else {
+#    message(Building with UPNP support)
+#    count(USE_UPNP, 0) {
+#        USE_UPNP=1
+#    }
+#    DEFINES += USE_UPNP=$$USE_UPNP STATICLIB
+#    INCLUDEPATH += $$MINIUPNPC_INCLUDE_PATH
+#    LIBS += $$join(MINIUPNPC_LIB_PATH,,-L,) -lminiupnpc
+#    win32:LIBS += -liphlpapi
+#}
 
-# use: qmake "USE_DBUS=1"
+ use: qmake "USE_DBUS=1"
 contains(USE_DBUS, 1) {
     message(Building with DBUS (Freedesktop notifications) support)
     DEFINES += USE_DBUS
     QT += dbus
 }
 
-# use: qmake "USE_IPV6=1" ( enabled by default; default)
-#  or: qmake "USE_IPV6=0" (disabled by default)
-#  or: qmake "USE_IPV6=-" (not supported)
+ use: qmake "USE_IPV6=1" ( enabled by default; default)
+  or: qmake "USE_IPV6=0" (disabled by default)
+  or: qmake "USE_IPV6=-" (not supported)
 contains(USE_IPV6, -) {
     message(Building without IPv6 support)
 } else {
@@ -112,7 +115,7 @@ LIBS += $$PWD/src/leveldb/libleveldb.a $$PWD/src/leveldb/libmemenv.a
         QMAKE_RANLIB = $$replace(QMAKE_STRIP, strip, ranlib)
     }
     LIBS += -lshlwapi
-    genleveldb.commands = cd $$PWD/src/leveldb && CC=$$QMAKE_CC CXX=$$QMAKE_CXX TARGET_OS=OS_WINDOWS_CROSSCOMPILE $(MAKE) OPT=\"$$QMAKE_CXXFLAGS $$QMAKE_CXXFLAGS_RELEASE\" libleveldb.a libmemenv.a && $$QMAKE_RANLIB $$PWD/src/leveldb/libleveldb.a && $$QMAKE_RANLIB $$PWD/src/leveldb/libmemenv.a
+    #genleveldb.commands = cd $$PWD/src/leveldb && CC=$$QMAKE_CC CXX=$$QMAKE_CXX TARGET_OS=OS_WINDOWS_CROSSCOMPILE $(MAKE) OPT=\"$$QMAKE_CXXFLAGS $$QMAKE_CXXFLAGS_RELEASE\" libleveldb.a libmemenv.a && $$QMAKE_RANLIB $$PWD/src/leveldb/libleveldb.a && $$QMAKE_RANLIB $$PWD/src/leveldb/libmemenv.a
 }
 genleveldb.target = $$PWD/src/leveldb/libleveldb.a
 genleveldb.depends = FORCE
@@ -319,7 +322,7 @@ SOURCES += src/qt/test/test_main.cpp \
 HEADERS += src/qt/test/uritests.h
 DEPENDPATH += src/qt/test
 QT += testlib
-TARGET = litecoin-qt_test
+TARGET = monacoin-qt_test
 DEFINES += BITCOIN_QT_TEST
   macx: CONFIG -= app_bundle
 }
@@ -419,7 +422,7 @@ macx:HEADERS += src/qt/macdockiconhandler.h src/qt/macnotificationhandler.h
 macx:OBJECTIVE_SOURCES += src/qt/macdockiconhandler.mm src/qt/macnotificationhandler.mm
 macx:LIBS += -framework Foundation -framework ApplicationServices -framework AppKit -framework CoreServices
 macx:DEFINES += MAC_OSX MSG_NOSIGNAL=0
-macx:ICON = src/qt/res/icons/litecoin.icns
+macx:ICON = src/qt/res/icons/monacoin.icns
 macx:QMAKE_CFLAGS_THREAD += -pthread
 macx:QMAKE_LFLAGS_THREAD += -pthread
 macx:QMAKE_CXXFLAGS_THREAD += -pthread

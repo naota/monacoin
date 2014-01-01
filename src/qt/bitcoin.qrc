@@ -43,8 +43,10 @@
     </qresource>
     <qresource prefix="/images">
         <file alias="about">res/images/about.png</file>
-        <file alias="splash">res/images/splash.png</file>
-        <file alias="splash_testnet">res/images/splash_testnet.png</file>
+        <file alias="splash_1">res/images/splash_1.png</file>
+        <file alias="splash_2">res/images/splash_2.png</file>
+        <file alias="splash_3">res/images/splash_3.png</file>
+        <file alias="splash_4">res/images/splash_4.png</file>
     </qresource>
     <qresource prefix="/movies">
         <file alias="update_spinner">res/movies/update_spinner.mng</file>

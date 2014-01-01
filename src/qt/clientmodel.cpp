@@ -62,7 +62,8 @@ QDateTime ClientModel::getLastBlockDate() const
 
 double ClientModel::getVerificationProgress() const
 {
-    return Checkpoints::GuessVerificationProgress(pindexBest);
+      return 0.0;
+//    return Checkpoints::GuessVerificationProgress(pindexBest);
 }
 
 void ClientModel::updateTimer()
@@ -107,6 +108,34 @@ void ClientModel::updateAlert(const QString &hash, int status)
 
     emit alertsChanged(getStatusBarWarnings());
 }
+
+double ClientModel::GetDifficulty() const
+{
+    // Floating point number that is a multiple of the minimum difficulty,
+    // minimum difficulty = 1.0.
+
+    if (pindexBest == NULL)
+        return 1.0;
+    int nShift = (pindexBest->nBits >> 24) & 0xff;
+
+    double dDiff =
+        (double)0x0000ffff / (double)(pindexBest->nBits & 0x00ffffff);
+
+    while (nShift < 29)
+    {
+        dDiff *= 256.0;
+        nShift++;
+    }
+    while (nShift > 29)
+    {
+        dDiff /= 256.0;
+        nShift--;
+    }
+
+    return dDiff;
+}
+
+
 
 bool ClientModel::isTestNet() const
 {

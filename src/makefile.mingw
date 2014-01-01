@@ -21,15 +21,21 @@ USE_UPNP:=-
 USE_IPV6:=1
 
 DEPSDIR?=/usr/local
-BOOST_SUFFIX?=-mgw46-mt-sd-1_52
+BOOST_SUFFIX?=-mgw48-mt-s-1_54
 
 INCLUDEPATHS= \
  -I"$(CURDIR)" \
- -I"$(DEPSDIR)/include"
+ -I"$(DEPSDIR)/include" \
+ -I"c:/deps/boost_1_54_0" \
+ -I"c:/deps/db-4.8.30.NC/build_unix" \
+ -I"c:/deps/openssl-1.0.1e/include"
 
 LIBPATHS= \
  -L"$(CURDIR)/leveldb" \
- -L"$(DEPSDIR)/lib"
+ -L"$(DEPSDIR)/lib" \
+ -L"c:/deps/boost_1_54_0/stage/lib" \
+ -L"c:/deps/db-4.8.30.NC/build_unix" \
+ -L"c:/deps/openssl-1.0.1e"
 
 LIBS= \
  -l leveldb \
@@ -47,7 +53,7 @@ DEFS=-D_MT -DWIN32 -D_WINDOWS -DBOOST_THREAD_USE_LIB -DBOOST_SPIRIT_THREADSAFE
 DEBUGFLAGS=-g
 CFLAGS=-mthreads -O2 -w -Wall -Wextra -Wformat -Wformat-security -Wno-unused-parameter $(DEBUGFLAGS) $(DEFS) $(INCLUDEPATHS)
 # enable: ASLR, DEP and large address aware
-LDFLAGS=-Wl,--dynamicbase -Wl,--nxcompat -Wl,--large-address-aware
+LDFLAGS=-Wl,--dynamicbase -Wl,--nxcompat -Wl,--large-address-aware -static
 
 TESTDEFS = -DTEST_DATA_DIR=$(abspath test/data)
 
@@ -108,10 +114,10 @@ OBJS_SSE2= obj/scrypt-sse2.o
 OBJS += $(OBJS_SSE2)
 endif
 
-all: litecoind.exe
+all: monacoind.exe
 
-test check: test_litecoin.exe FORCE
-	test_litecoin.exe
+test check: test_monacoin.exe FORCE
+	test_monacoin.exe
 
 #
 # LevelDB support
@@ -128,7 +134,7 @@ obj/%-sse2.o: %-sse2.cpp
 obj/%.o: %.cpp $(HEADERS)
 	$(CXX) -c $(CFLAGS) -o $@ $<
 
-litecoind.exe: $(OBJS:obj/%=obj/%)
+monacoind.exe: $(OBJS:obj/%=obj/%)
 	$(CXX) $(CFLAGS) $(LDFLAGS) -o $@ $(LIBPATHS) $^ $(LIBS)
 
 TESTOBJS := $(patsubst test/%.cpp,obj-test/%.o,$(wildcard test/*.cpp))
@@ -136,11 +142,11 @@ TESTOBJS := $(patsubst test/%.cpp,obj-test/%.o,$(wildcard test/*.cpp))
 obj-test/%.o: test/%.cpp $(HEADERS)
 	$(CXX) -c $(TESTDEFS) $(CFLAGS) -o $@ $<
 
-test_litecoin.exe: $(TESTOBJS) $(filter-out obj/init.o,$(OBJS:obj/%=obj/%))
+test_monacoin.exe: $(TESTOBJS) $(filter-out obj/init.o,$(OBJS:obj/%=obj/%))
 	$(CXX) $(CFLAGS) $(LDFLAGS) -o $@ $(LIBPATHS) $^ -lboost_unit_test_framework$(BOOST_SUFFIX) $(LIBS)
 
 clean:
-	rm -f litecoind.exe test_litecoin.exe
+	rm -f monacoind.exe test_monacoin.exe
 	rm -f obj/*
 	rm -f obj-test/*
 	cd leveldb && $(MAKE) TARGET_OS=NATIVE_WINDOWS clean && cd ..
